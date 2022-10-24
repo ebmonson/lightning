@@ -58,6 +58,7 @@ pro lightning_postprocessing, input_dir, config, sed_id
 ;   - 2022/09/22: Updated how we identify stranded walkers in affine MCMC (Keith Doore)
 ;   - 2022/09/23: Made ``autocorr_flag`` unique to affine MCMC (Keith Doore)
 ;   - 2022/09/26: Added ``DOF`` to MPFIT output (Keith Doore)
+;   - 2022/10/24: Updated stranded walker search to use configuration input value (Keith Doore)
 ;-
  On_error, 2
  compile_opt idl2
@@ -312,11 +313,11 @@ pro lightning_postprocessing, input_dir, config, sed_id
            lnprob_chain = lnprob_chain[burn_in:*, *]
            chi2_chain = chi2_chain[burn_in:*, *]
 
-           ; Check for stranded walkers (acceptance fraction < median(acceptance fraction) - 3*stddev(acceptance fraction)),
-           ;   and remove them.
+           ; Check for stranded walkers and remove them.
            med_accept = median(convergence_metric.acceptance_frac)
            std_accept = stddev(convergence_metric.acceptance_frac)
-           stranded = where(convergence_metric.acceptance_frac lt med_accept - 3*std_accept, Nstranded, comp=free, ncomp=Nfree, /null)
+           stranded = where(convergence_metric.acceptance_frac lt med_accept - config.AFFINE_STRANDED_DEVIATION*std_accept, $
+                            Nstranded, comp=free, ncomp=Nfree, /null)
            stranded_flag = intarr(config.NPARALLEL)
            if Nstranded gt 0 then stranded_flag[stranded] = 1
            chain = chain[*, *, free]
@@ -596,7 +597,7 @@ pro lightning_postprocessing, input_dir, config, sed_id
    if keyword_set(config.XRAY_EMISSION) then begin
      out[i].XRAY_BANDPASS[*, 0:Nxray-1]   = sed_data.XRAY_BANDPASS
      out[i].GALACTIC_NH     = sed_data.GALACTIC_NH
-     out[i].LNU_XRAYMOD[0:Nxray-1, finite_model_idc]  = Lnu_xray_mod
+     out[i].LNU_XRAYMOD[0:Nxray-1, *]  = Lnu_xray_mod
 
      case strupcase(config.XRAY_UNIT) of
          'COUNTS': begin
@@ -604,10 +605,10 @@ pro lightning_postprocessing, input_dir, config, sed_id
              out[i].NET_COUNTS[0:Nxray-1]      = sed_data.NET_COUNTS
              out[i].NET_COUNTS_UNC[0:Nxray-1]  = sed_data.NET_COUNTS_UNC
              out[i].XRAY_COUNTS_MOD[0:Nxray-1, *] = xray_counts_mod
-             out[i].LNU_XRAY_OBS[0:Nxray-1, finite_model_idc] = rebin(sed_data.NET_COUNTS, Nxray, Nmodels) / $
-                                                                xray_counts_mod[*, finite_model_idc] * Lnu_xray_mod
-             out[i].LNU_XRAY_UNC[0:Nxray-1, finite_model_idc] = rebin(sed_data.NET_COUNTS_UNC, Nxray, Nmodels) / $
-                                                                xray_counts_mod[*, finite_model_idc] * Lnu_xray_mod
+             out[i].LNU_XRAY_OBS[0:Nxray-1, finite_model_idc] = rebin(sed_data.NET_COUNTS, Nxray, Nfinite_models) / $
+                                                                xray_counts_mod[*, finite_model_idc] * Lnu_xray_mod[*, finite_model_idc]
+             out[i].LNU_XRAY_UNC[0:Nxray-1, finite_model_idc] = rebin(sed_data.NET_COUNTS_UNC, Nxray, Nfinite_models) / $
+                                                                xray_counts_mod[*, finite_model_idc] * Lnu_xray_mod[*, finite_model_idc]
          end
          'FLUX': begin
             out[i].LNU_XRAY_OBS[0:Nxray-1] = sed_data.XRAY_LNU_OBS
