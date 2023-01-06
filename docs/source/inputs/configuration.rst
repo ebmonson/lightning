@@ -108,11 +108,11 @@ and the distance to objects if their distance was specified by redshift.
 Stellar Emission
 ----------------
 
-``SPS`` : string scalar
-    The stellar population synthesis (SPS)
-    models to use for the stellar population. The only SPS models currently available in Lightning are the
-    `PEGASE <http://www2.iap.fr/pegase/>`_ models. These models are selected by setting ``SPS`` to ``'PEGASE'``.
-    To fit the SEDs without any stellar emission, set ``SPS`` to ``'NONE'``.
+``SSP`` : string scalar
+    The simple stellar population (SSP)
+    models to use for the stellar population. The only SSP models currently available in Lightning are the
+    `PEGASE <http://www2.iap.fr/pegase/>`_ models. These models are selected by setting ``SSP`` to ``'PEGASE'``.
+    To fit the SEDs without any stellar emission, set ``SSP`` to ``'NONE'``.
 
 .. note::
 
@@ -122,15 +122,15 @@ Stellar Emission
 
 ``IMF`` : string scalar
     The initial mass function (IMF)
-    to use in the SPS models. The only IMF currently available in Lightning is that from
+    to use in the SSP models. The only IMF currently available in Lightning is that from
     `Kroupa (2001) <https://ui.adsabs.harvard.edu/abs/2001MNRAS.322..231K/abstract>`_.
     This IMF is selected by setting ``IMF`` to ``'KROUPA01'``.
 
 ``ZMETAL`` : float or double scalar
-    The metallicity to use in the SPS models
+    The metallicity to use in the SSP models
     in terms of Z, normalized to the solar metallicity.
     The current available metallicities in Lightning are 0.001, 0.004, 0.008, 0.02, 0.05, and 0.1
-    in units of :math:`Z_\odot`.
+    in terms of :math:`Z`.
 
     .. note::
 
@@ -141,10 +141,10 @@ Stellar Emission
 
 
 ``EMISSION_LINES`` : flag
-    A flag indicating if nebular emission lines should be included in the SPS models.
+    A flag indicating if nebular emission lines should be included in the SSP models.
 
 ``NEBULAR_EXTINCTION`` : flag
-    A flag indicating if nebular extinction should be included in the SPS models.
+    A flag indicating if nebular extinction should be included in the SSP models.
 
 ``SFH`` : string scalar
     The type of star formation history (SFH) to assume when fitting the SEDs. The only
@@ -167,7 +167,7 @@ Stellar Emission
         accordingly.
 
 ``DTIME_SF`` : int, float, or double scalar
-    The time step used for interpolating the SPS models into the age
+    The time step used for interpolating the SSP models into the age
     bins in units of :math:`{\rm yr}`.
 
     .. warning::
@@ -387,7 +387,7 @@ X-ray Emission
 ``XRAY_UNIT`` : string scalar
     The form (or unit type) of X-ray data within the input catalog.
     Currently, there are two types of X-ray data that can be input into Lightning.
-    These are instrumental counts or fluxes (in :math:`{\rm erg\ cm^{-2]\ s^{-1}}`), which are
+    These are instrumental counts or fluxes (in :math:`{\rm erg\ cm^{-2}\ s^{-1}}`), which are
     selected by setting ``XRAY_UNIT`` to ``'COUNTS'`` or ``'FLUX'``, respectively.
     See the discussion on :ref:`input-formats-label` for more details on how to
     format the different X-ray data types.

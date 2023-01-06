@@ -98,6 +98,8 @@ function lightning_model_lnuxray_highres, parameters, parameter_name, models, Lb
 ;   - 2022/07/27: Added fixed observed-frame wavelength grid (Keith Doore)
 ;   - 2022/08/11: Renamed function to match function naming scheme (Keith Doore)
 ;   - 2022/09/08: Allow user-specified arbitary wavelength grid (Erik B. Monson)
+;   - 2022/11/02: Galactic NH is now in units of 1e20 cm-2 (Erik B. Monson)
+;   - 2022/12/13: Fixed bug in ``wave`` error check (Keith Doore)
 ;-
  On_error, 2
  compile_opt idl2
@@ -143,7 +145,7 @@ function lightning_model_lnuxray_highres, parameters, parameter_name, models, Lb
    if n_elements(wave) ne 0 then begin
      if size(wave, /type) lt 2 or size(wave, /type) gt 5 then $
          message, 'WAVE must be of type int, float, or double.'
-     if size(wave, /dim) gt 1 then message, 'WAVE must be a scalar or 1-D array.'
+     if size(wave, /n_dim) gt 1 then message, 'WAVE must be a scalar or 1-D array.'
      if min(wave) lt 0 then $
          message, 'WAVE must only contain positive values.'
    endif
@@ -180,7 +182,7 @@ function lightning_model_lnuxray_highres, parameters, parameter_name, models, Lb
  ; Handle absorption
  nh_milkyway = models.xray_models.GALACTIC_NH
  exp_neg_tau_milkyway = rebin(reform(models.xray_models.EXP_NEG_TAU_XRAY_MW, Nwave_mod, 1), Nwave_mod, Nmodels)^$
-                        replicate(nh_milkyway / 1.d20, Nwave_mod, Nmodels)
+                        replicate(nh_milkyway, Nwave_mod, Nmodels)
 
  exp_neg_tau_nucleus = rebin(reform(models.xray_models.EXP_NEG_TAU_XRAY, Nwave_mod, 1), Nwave_mod, Nmodels)^$
                        rebin(reform(nh, 1, Nmodels), Nwave_mod, Nmodels)
