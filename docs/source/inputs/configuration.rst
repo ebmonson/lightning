@@ -151,7 +151,7 @@ Stellar Emission
 ``ZMETAL`` : float or double scalar
     The metallicity to use in the SSP models
     in terms of Z, normalized to the solar metallicity.
-    The current available metallicities in Lightning are 0.001, 0.004, 0.008, 0.02, 0.05, and 0.1
+    The current available metallicities in Lightning are 0.001, 0.004, 0.008, 0.01, 0.02, 0.05, and 0.1
     in terms of :math:`Z`.
 
     .. note::
@@ -464,12 +464,11 @@ X-ray Emission
     three X-ray absorption models currently available in Lightning. They are
     the `"tbabs" absorption model <https://ui.adsabs.harvard.edu/abs/2000ApJ...542..914W/abstract>`_
     with the default `Wilms et al. (2000) <https://ui.adsabs.harvard.edu/abs/2000ApJ...542..914W/abstract>`_
-    abundances, the "tbabs" model with `Anders & Grevesse (1986)
-    <https://ui.adsabs.harvard.edu/abs/1989GeCoA..53..197A/abstract>`_ abundances, and the
+    abundances and the
     *Sherpa* "atten" model from `Rumph et al. (1994)
     <https://ui.adsabs.harvard.edu/abs/1994AJ....107.2108R/abstract>`_.
-    These X-ray absorption models are selected by setting ``XRAY_ABS_MODEL`` to ``'TBABS-WILM'``,
-    ``'TBABS-ANGR'``, or ``'ATTEN'``, respectively.
+    These X-ray absorption models are selected by setting ``XRAY_ABS_MODEL`` to ``'TBABS-WILM'``
+    or ``'ATTEN'``, respectively.
 
 ``NH`` : structure
     The free parameter :math:`N_H`, the intrinsic HI column density along
